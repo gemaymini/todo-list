@@ -1,4 +1,6 @@
 import React from 'react';
+import TodoForm from './TodoForm';
+import TodoList from './TodoList';
 export default class App extends React.Component{
     constructor(props)
     {
@@ -10,10 +12,10 @@ export default class App extends React.Component{
       }
     }
 
-    addTodoItem=()=>{
+    addTodoItem=(todoItemValue)=>{
       const newTodoItem={
         id:this.state.todoItems.length,
-        value:this.todoItemValue.value,
+        value:todoItemValue,
         done:false,
         delete:false
       };
@@ -28,41 +30,28 @@ export default class App extends React.Component{
       );
       this.setState({todoItems:newitems});
     }
-
-    
-    updateToDoItem = (item) => {
-      let updatedValue = prompt("Enter new value:", item.value);
-      if (updatedValue !== null) {
-        const newItems = this.state.todoItems.map(
-          (todoItem) => todoItem.id === item.id ? { ...todoItem, value: updatedValue } : todoItem
-        );
-        this.setState({ todoItems: newItems});
-      }
-    };
   
+    updateTodoItem=(item)=>{
+      const newvalue = prompt("Enter new name for the todo item",item.value);
+      const newitems=this.state.todoItems.map(
+        (todoItem)=>todoItem.id===item.id?{...todoItem,value:newvalue}:todoItem
+      )
+      this.setState({todoItems:newitems});
+    }
+
+
     render() {
       return (
         <div>
           <h1>My First React App --TODOLIST</h1>
-          <div>
-            <input type='text' placeholder='add something...' ref={(input) => this.todoItemValue = input} />
-            <button type='submit' onClick={this.addTodoItem}>添加</button>
-          </div>
-          <ul>
-            {
-              this.state.todoItems.map((item) => {
-                if (item.delete) return null;
-                return (
-                  <li key={item.id}>
-                    <label>{item.value}</label>
-                    <button onClick={() => this.deleteTodoItem(item)}>删除</button>
-                    <button onClick={() => this.updateToDoItem(item)}>修改</button>
-                  </li>
-                );
-              })
-            }
-          </ul>
+          <TodoForm
+            addTodoItem={this.addTodoItem}
+          />
+          <TodoList
+            todoItems={this.state.todoItems}
+            deleteTodoItem={this.deleteTodoItem}
+            updateTodoItem={this.updateTodoItem}/>
         </div>
-      );
-    }
+      )
+    };
   }
