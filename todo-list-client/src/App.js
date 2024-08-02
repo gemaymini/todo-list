@@ -42,9 +42,10 @@ export default class App extends React.Component{
     deleteTodoItem=(item)=>{
       const that=this;
       axios.delete('http://localhost:8000/items',{
-        data:{
-          id:item.id
-        }
+    data:{
+          id:item.id,
+          value:item.value
+    }
       })
        .then(function (response) {
         that.setState({
@@ -54,11 +55,16 @@ export default class App extends React.Component{
   
     updateTodoItem=(item)=>{
       const newvalue = prompt("Enter new name for the todo item",item.value);
-      const newitems=this.state.todoItems.map(
-        (todoItem)=>todoItem.id===item.id?{...todoItem,value:newvalue}:todoItem
-      )
-      this.setState({todoItems:newitems});
-    }
+      const that=this;
+      axios.put('http://localhost:8000/items',{
+          id:item.id,
+          value:newvalue
+        })
+        .then(function (response) {
+        that.setState({
+          todoItems:[...response.data]
+        })
+      })}
 
 
     render() {
